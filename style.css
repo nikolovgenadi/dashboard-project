@@ -1,0 +1,78 @@
+* { 
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 100fr;
+  grid-template-rows: auto;
+  grid-template-areas: 
+    "time"
+    "title"
+    "main";
+    gap: 1rem;
+    background-color: black;
+}
+
+main { 
+  background-color: rgb(0, 0, 0);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 25fr 25fr 25fr 25fr;
+  grid-template-rows:auto;
+  grid-template-areas: 
+    "links daily something note";
+    gap: 3rem;
+}
+
+#time {
+  grid-area: time;
+  width: 100%;
+  height: 100%;
+  background-color: blueviolet;
+}
+
+#title {
+  width: 100%;
+  height: 100%;
+  background-color: brown;
+  grid-area: title;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  align-content: space-around;
+  justify-content: space-between;
+  align-items: center;
+}
+
+section {
+  background-color: rgb(0, 3, 154);
+  width: 100%;
+  height: 100%;
+}
+
+
+#links {
+  grid-area: links;
+  background-color: aqua;
+}
+
+#daily {
+  grid-area: daily;
+  background-color:aquamarine;
+}
+
+#something {
+  grid-area: something;
+  background-color:rgb(127, 255, 146);
+}
+
+#note {
+  grid-area: note;
+  background-color:rgb(45, 0, 160);
+}
+
