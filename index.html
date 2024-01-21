@@ -1,38 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/main.js" defer></script>
     <title>Vite App</title>
   </head>
+
   <body>
-    <div id="time">
-      DA TAIM
-    </div>
-
-    <header id="title">
-      someones dashboard
-    </header>
-
-    <main class="sections">
-      <section id="links">
-snabb lankar
+    <main class="app-container">
+      <header class="header-time-wrapper">
+        <div class="time-wrapper">
+          <span class="time-time">00:00:00</span>
+          <span class="time-date">0000-00-00</span>
+        </div>
+      </header>
+      <section class="middle-wrapper">
+        <div id="userNameEdit" class="user-name-title" contenteditable="true" placeholder="Your Username Dashboard">Your Username Dashboard</div>
+        <div class="cards-wrapper">
+          <div class="cards">
+            <h2 class="links">Snabblänkar</h2>
+            <div class="links-wrapper"></div>
+            <button class="add-new-link-button">Add new link</button>
+          </div>
+          <div class="cards"><h2 class="weather">Dagens väder</h2>card2</div>
+          <div class="cards"><h2 class="something">something</h2>card3</div>
+          <div class="cards"><h2 class="notes">Anteckningar</h2>card4</div>
+        </div>
       </section>
-
-      <section id="daily">
-        dagens vader
-      </section>
-     
-      <section id="something">
-        ...
-      </section>
-
-      <section id="note">
-        anteckningar
-      </section>
+      <footer class="footer-background-wrapper">
+        <button class="change-background-button">Change background</button>
+      </footer>
     </main>
-    <script type="module" src="/main.js"></script>
   </body>
 </html>
