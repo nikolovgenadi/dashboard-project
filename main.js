@@ -2,7 +2,9 @@ import axios from "axios";
 
 const WEATHER_API_URL = "http://api.weatherstack.com/current";
 const IMAGES_API_URL = `https://pixabay.com/api/`;
+const BACKGROUNDIMAGES_API_URL = `https://api.unsplash.com/`
 
+const BACKGROUNDIMAGES_KEY = import.meta.env.VITE_PIXABAY_KEY;
 const PIXABAY_KEY = import.meta.env.VITE_PIXABAY_KEY;
 const WEATHER_KEY = import.meta.env.VITE_WEATHER_KEY;
 
@@ -13,8 +15,6 @@ const changeBackgroundButton = document.querySelector(
 const appTime = document.querySelector(".time-time");
 const appDate = document.querySelector(".time-date");
 
-// const userNameEdit = document.querySelector("user-name-title");
-
 setInterval(() => {
   const date = new Date();
   appTime.textContent = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
@@ -24,9 +24,34 @@ setInterval(() => {
   }-${date.getDate()}`;
 }, 1000);
 
-// changeBackgroundButton.addEventListener("click", () => {
-//   changeBackground();
-// });
+changeBackgroundButton.addEventListener("click", () => {
+  changeBackground();
+});
+
+async function getBackgroundPicture() {
+  if (!localStorage.getItem("backgroundData")) {
+    const { data } = await axios.get(BACKGROUNDIMAGES_API_URL, {
+      params: { key: PIXABAY_KEY, q: "forest", image_type: "photo" },
+    });
+
+    const imagesList = data.hits.map((a) => a.largeImageURL);
+    localStorage.setItem("backgroundData", JSON.stringify(imagesList));
+  }
+
+  const urls = JSON.parse(localStorage.getItem("backgroundData"));
+
+  appContainer.style.backgroundImage = `url(${urls[0]})`;
+}
+getBackgroundPicture();
+
+function changeBackground() {
+  const urls = JSON.parse(localStorage.getItem("backgroundData"));
+
+  const url = Math.floor(Math.random() * urls.length);
+
+  appContainer.style.backgroundImage = `url(${urls[url]})`;
+}
+
 
 // async function getBackgroundPicture() {
 //   if (!localStorage.getItem("backgroundData")) {
@@ -79,20 +104,11 @@ setInterval(() => {
 const userNameEdit = document.getElementById("userNameEdit");
 
 function handleInput() {
-  console.log("Input event triggered");
   const updatedUserName = userNameEdit.innerText;
   localStorage.setItem("user-name-title", JSON.stringify(updatedUserName));
-}
-
-function handleBlur() {
-  console.log("Blur event triggered");
-  const updatedUserName = userNameEdit.innerText;
-  localStorage.setItem("user-name-title", JSON.stringify(updatedUserName));
-  console.log("Username saved:", updatedUserName);
 }
 
 userNameEdit.addEventListener("input", handleInput);
-userNameEdit.addEventListener("blur", handleBlur);
 
 const savedUserName = localStorage.getItem("user-name-title");
 if (savedUserName !== null && savedUserName !== undefined) {
@@ -143,9 +159,37 @@ linkListArray.forEach(link => {
   newLinkDiv.appendChild(newLinkAnchor);
 
   linkList.appendChild(newLinkDiv);
+
+  newLinkDiv.classList.add('links');
 });
 
 newLinkButton.addEventListener("click", createNewLink);
+
+const noteArea = document.querySelector('#notes');
+
+function saveNotes() {
+  const notes = noteArea.value; 
+  localStorage.setItem("notes", notes);
+}
+
+window.addEventListener('load', () => {
+  const savedNotes = localStorage.getItem("notes");
+  if (savedNotes !== null && savedNotes !== undefined) {
+    noteArea.value = savedNotes;
+  }
+});
+
+let typingTimer;
+const typingDelay = 500;
+
+noteArea.addEventListener("input", () => {
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(saveNotes, typingDelay);
+});
+
+
+noteArea.addEventListener("input", saveNotes);
+
 
 // async function getUser(url) {
 //   try {

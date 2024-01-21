@@ -57,11 +57,12 @@ h2 {
 
 .change-background-button {
   border: none;
-  background-color: rgba(200, 200, 200, 0.6);
+  background-color: rgba(49, 49, 49, 0.6);
   border-radius: 5px;
   padding: 0 10px;
   height: 25px;
   cursor: pointer;
+  color: #fff;
 }
 
 .cards-wrapper {
@@ -85,10 +86,40 @@ h2 {
 
 .add-new-link-button {
   border: none;
-  background-color: rgba(220, 220, 220, 0.6);
+  background-color: rgba(49, 49, 49, 0.6);
   border-radius: 5px;
   padding: 0 10px;
   height: 20px;
   width: 50%;
   cursor: pointer;
+  justify-self: flex-end;
+  color: #fff;
+}
+
+.links-wrapper {
+  display: grid;
+  gap: 5px;
+  width: 95%;
+}
+
+.links {
+  display: flex;
+  background-color:#fff;
+  padding: 10px;
+  border-radius: 7px;
+  width: 90%;
+justify-content: center;
+}
+
+.links a {
+  text-decoration: none;
+}
+
+#notes {
+  border: none;
+  resize: none;
+  width: 95%;
+  height: 90%;
+  background-color: rgba(220, 220, 220, 0.6);
+  text-decoration: none;
 }
