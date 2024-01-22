@@ -32,6 +32,7 @@ body {
 
 .user-name-title {
   font-size: 3rem;
+  color: bisque;
 }
 
 h2 {
@@ -108,7 +109,7 @@ h2 {
   padding: 10px;
   border-radius: 7px;
   width: 90%;
-justify-content: center;
+  justify-content: center;
 }
 
 .links a {

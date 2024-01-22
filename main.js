@@ -2,11 +2,13 @@ import axios from "axios";
 
 const WEATHER_API_URL = "http://api.weatherstack.com/current";
 const IMAGES_API_URL = `https://pixabay.com/api/`;
-const BACKGROUNDIMAGES_API_URL = `https://api.unsplash.com/`
+const BACKGROUNDIMAGES_API_URL = `https://api.unsplash.com/photos/?client_id=`;
+const NEWWEATHER_API_URL = `https://api.openweathermap.org/data/`;
 
-const BACKGROUNDIMAGES_KEY = import.meta.env.VITE_PIXABAY_KEY;
+const BACKGROUNDIMAGES_KEY = import.meta.env.VITE_BACKGROUNDIMAGES_KEY;
 const PIXABAY_KEY = import.meta.env.VITE_PIXABAY_KEY;
 const WEATHER_KEY = import.meta.env.VITE_WEATHER_KEY;
+const NEWWEATHER_KEY = import.meta.env.VITE_NEWWEATHER_API_URL;
 
 const appContainer = document.querySelector(".app-container");
 const changeBackgroundButton = document.querySelector(
@@ -24,34 +26,39 @@ setInterval(() => {
   }-${date.getDate()}`;
 }, 1000);
 
-changeBackgroundButton.addEventListener("click", () => {
-  changeBackground();
-});
-
-async function getBackgroundPicture() {
-  if (!localStorage.getItem("backgroundData")) {
-    const { data } = await axios.get(BACKGROUNDIMAGES_API_URL, {
-      params: { key: PIXABAY_KEY, q: "forest", image_type: "photo" },
-    });
-
-    const imagesList = data.hits.map((a) => a.largeImageURL);
-    localStorage.setItem("backgroundData", JSON.stringify(imagesList));
-  }
-
-  const urls = JSON.parse(localStorage.getItem("backgroundData"));
-
-  appContainer.style.backgroundImage = `url(${urls[0]})`;
-}
-getBackgroundPicture();
-
-function changeBackground() {
-  const urls = JSON.parse(localStorage.getItem("backgroundData"));
-
-  const url = Math.floor(Math.random() * urls.length);
-
-  appContainer.style.backgroundImage = `url(${urls[url]})`;
+async function weatherInformation {
+  const response = await axios.get('https://api.openweathermap.org/data/');
+  const { data } = response.data
 }
 
+// let imageUrls = [];
+
+// async function randomImages() {
+//   // inputData = input.value;
+//   const url = `https://api.unsplash.com/photos/?client_id=${BACKGROUNDIMAGES_KEY}`;
+
+//   try {
+//     const response = await fetch(url);
+//     const data = await response.json();
+
+//     imageUrls = data.map((image) => image.urls.regular);
+
+//     setRandomBackground();
+//     console.log("try");
+//   } catch (error) {
+//     console.log("error", error);
+//   }
+// }
+
+// function setRandomBackground() {
+//   const randomIndex = Math.floor(Math.random() * imageUrls.length);
+//   const randomImageUrl = imageUrls[randomIndex];
+
+//   document.body.style.backgroundImage = `url(${randomImageUrl})`;
+//   console.log("set");
+// }
+
+// changeBackgroundButton.addEventListener("click", randomImages);
 
 // async function getBackgroundPicture() {
 //   if (!localStorage.getItem("backgroundData")) {
@@ -88,7 +95,6 @@ function changeBackground() {
 //       long = s.coords.longitude;
 //     });
 //   }
-
 //   const { data } = await axios.get(WEATHER_API_URL, {
 //     params: {
 //       access_key: WEATHER_KEY,
@@ -123,14 +129,14 @@ function createNewLink() {
   let linkInput = prompt("Add your link in the input field.");
 
   if (linkInput !== null) {
-    if(!linkInput.includes("://")) {
+    if (!linkInput.includes("://")) {
       linkInput = "http://" + linkInput;
     }
     const newLinkAnchor = document.createElement("a");
     newLinkAnchor.href = linkInput;
     newLinkAnchor.textContent = linkInput;
 
-    newLinkAnchor.addEventListener('click', function(event) {
+    newLinkAnchor.addEventListener("click", function (event) {
       event.preventDefault();
       window.open(linkInput, "_blank");
     });
@@ -140,39 +146,41 @@ function createNewLink() {
     linkList.appendChild(newLinkDiv);
     linkListArray.push(linkInput);
 
+    newLinkDiv.classList('links');
+
     localStorage.setItem("linkList", JSON.stringify(linkListArray));
     console.log("Link was added:", linkInput);
   }
 }
 
-linkListArray.forEach(link => {
-  const newLinkAnchor = document.createElement('a');
+linkListArray.forEach((link) => {
+  const newLinkAnchor = document.createElement("a");
   newLinkAnchor.href = link;
   newLinkAnchor.textContent = link;
 
-  newLinkAnchor.addEventListener('click', function(event) {
+  newLinkAnchor.addEventListener("click", function (event) {
     event.preventDefault();
     window.open(link, "_blank");
   });
 
-  const newLinkDiv = document.createElement('div');
+  const newLinkDiv = document.createElement("div");
   newLinkDiv.appendChild(newLinkAnchor);
 
   linkList.appendChild(newLinkDiv);
 
-  newLinkDiv.classList.add('links');
+  newLinkDiv.classList.add("links");
 });
 
 newLinkButton.addEventListener("click", createNewLink);
 
-const noteArea = document.querySelector('#notes');
+const noteArea = document.querySelector("#notes");
 
 function saveNotes() {
-  const notes = noteArea.value; 
+  const notes = noteArea.value;
   localStorage.setItem("notes", notes);
 }
 
-window.addEventListener('load', () => {
+window.addEventListener("load", () => {
   const savedNotes = localStorage.getItem("notes");
   if (savedNotes !== null && savedNotes !== undefined) {
     noteArea.value = savedNotes;
@@ -187,9 +195,7 @@ noteArea.addEventListener("input", () => {
   typingTimer = setTimeout(saveNotes, typingDelay);
 });
 
-
 noteArea.addEventListener("input", saveNotes);
-
 
 // async function getUser(url) {
 //   try {
