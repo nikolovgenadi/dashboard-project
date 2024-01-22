@@ -3,12 +3,12 @@ import axios from "axios";
 const WEATHER_API_URL = "http://api.weatherstack.com/current";
 const IMAGES_API_URL = `https://pixabay.com/api/`;
 const BACKGROUNDIMAGES_API_URL = `https://api.unsplash.com/photos/?client_id=`;
-const NEWWEATHER_API_URL = `https://api.openweathermap.org/data/`;
+const NEWWEATHER_API_URL = `https://api.openweathermap.org/data`;
 
 const BACKGROUNDIMAGES_KEY = import.meta.env.VITE_BACKGROUNDIMAGES_KEY;
 const PIXABAY_KEY = import.meta.env.VITE_PIXABAY_KEY;
 const WEATHER_KEY = import.meta.env.VITE_WEATHER_KEY;
-const NEWWEATHER_KEY = import.meta.env.VITE_NEWWEATHER_API_URL;
+const NEWWEATHER_KEY = import.meta.env.VITE_NEWWEATHER_KEY;
 
 const appContainer = document.querySelector(".app-container");
 const changeBackgroundButton = document.querySelector(
@@ -26,39 +26,81 @@ setInterval(() => {
   }-${date.getDate()}`;
 }, 1000);
 
-async function weatherInformation {
-  const response = await axios.get('https://api.openweathermap.org/data/');
-  const { data } = response.data
+// TODAYS WEATHER
+let lat = 59.3293;
+let lon = 18.0686;
+
+async function weatherInformation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(async (x) => {
+      lat = x.coords.latitude;
+      lon = x.coords.longitude;
+    });
+
+    try {
+      const response = await axios.get(
+        `${NEWWEATHER_API_URL}/2.5/weather?lat=${lat}&lon=${lon}&appid=${NEWWEATHER_KEY}`);
+      const data = response.data;
+
+      const weatherObject = { 
+        city: data.name,
+        humidity: data.main.humidity,
+        temperature: data.main.temp,
+        description: data.weather[0].description
+      }
+      const weatherWrapper = document.querySelector('.weather-wrapper');
+
+      const cityDiv = document.createElement('div');
+      const humidityDiv = document.createElement('div');
+      const temperatureDiv = document.createElement('div');
+      const descriptionDiv = document.createElement('div');
+
+      cityDiv.textContent = `City: ${weatherObject.city}`;
+      humidityDiv.textContent = `Humidity: ${weatherObject.humidity}%`;
+      temperatureDiv.textContent = `Temperature: ${weatherObject.temperature}°F`;
+      descriptionDiv.textContent = `Description: ${weatherObject.description}`;
+
+      weatherWrapper.appendChild(cityDiv);
+      weatherWrapper.appendChild(humidityDiv);
+      weatherWrapper.appendChild(temperatureDiv);
+      weatherWrapper.appendChild(descriptionDiv);
+
+    }  
+    catch {
+      console.error("error");
+    }
+  }
+}
+weatherInformation();
+
+// BACKGROUND IMAGES
+let imageUrls = [];
+
+async function randomImages() {
+  const url = `https://api.unsplash.com/photos/?client_id=${BACKGROUNDIMAGES_KEY}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    imageUrls = data.map((image) => image.urls.regular);
+
+    setRandomBackground();
+    console.log("try");
+  } catch (error) {
+    console.log("error", error);
+  }
 }
 
-// let imageUrls = [];
+function setRandomBackground() {
+  const randomIndex = Math.floor(Math.random() * imageUrls.length);
+  const randomImageUrl = imageUrls[randomIndex];
 
-// async function randomImages() {
-//   // inputData = input.value;
-//   const url = `https://api.unsplash.com/photos/?client_id=${BACKGROUNDIMAGES_KEY}`;
+  document.body.style.backgroundImage = `url(${randomImageUrl})`;
+  console.log("set");
+}
 
-//   try {
-//     const response = await fetch(url);
-//     const data = await response.json();
-
-//     imageUrls = data.map((image) => image.urls.regular);
-
-//     setRandomBackground();
-//     console.log("try");
-//   } catch (error) {
-//     console.log("error", error);
-//   }
-// }
-
-// function setRandomBackground() {
-//   const randomIndex = Math.floor(Math.random() * imageUrls.length);
-//   const randomImageUrl = imageUrls[randomIndex];
-
-//   document.body.style.backgroundImage = `url(${randomImageUrl})`;
-//   console.log("set");
-// }
-
-// changeBackgroundButton.addEventListener("click", randomImages);
+changeBackgroundButton.addEventListener("click", randomImages);
 
 // async function getBackgroundPicture() {
 //   if (!localStorage.getItem("backgroundData")) {
@@ -107,6 +149,8 @@ async function weatherInformation {
 
 // getWeatherData();
 
+
+// USER TITLE
 const userNameEdit = document.getElementById("userNameEdit");
 
 function handleInput() {
@@ -121,6 +165,8 @@ if (savedUserName !== null && savedUserName !== undefined) {
   userNameEdit.innerText = JSON.parse(savedUserName);
 }
 
+
+// LINKS 
 const newLinkButton = document.querySelector(".add-new-link-button");
 const linkList = document.querySelector(".links-wrapper");
 let linkListArray = JSON.parse(localStorage.getItem("linkList")) || [];
@@ -132,6 +178,7 @@ function createNewLink() {
     if (!linkInput.includes("://")) {
       linkInput = "http://" + linkInput;
     }
+
     const newLinkAnchor = document.createElement("a");
     newLinkAnchor.href = linkInput;
     newLinkAnchor.textContent = linkInput;
@@ -146,33 +193,43 @@ function createNewLink() {
     linkList.appendChild(newLinkDiv);
     linkListArray.push(linkInput);
 
-    newLinkDiv.classList('links');
+    newLinkDiv.classList.add("links");
 
     localStorage.setItem("linkList", JSON.stringify(linkListArray));
     console.log("Link was added:", linkInput);
   }
 }
 
-linkListArray.forEach((link) => {
-  const newLinkAnchor = document.createElement("a");
-  newLinkAnchor.href = link;
-  newLinkAnchor.textContent = link;
+function displayStoredLinks() {
+  linkListArray.forEach((link) => {
+    const newLinkAnchor = document.createElement("a");
+    newLinkAnchor.href = link;
+    newLinkAnchor.textContent = link;
 
-  newLinkAnchor.addEventListener("click", function (event) {
-    event.preventDefault();
-    window.open(link, "_blank");
+    newLinkAnchor.addEventListener("click", function (event) {
+      event.preventDefault();
+      window.open(link, "_blank");
+    });
+
+    const newLinkDiv = document.createElement("div");
+    newLinkDiv.appendChild(newLinkAnchor);
+    linkList.appendChild(newLinkDiv);
+
+    newLinkDiv.classList.add("links");
   });
+}
 
-  const newLinkDiv = document.createElement("div");
-  newLinkDiv.appendChild(newLinkAnchor);
-
-  linkList.appendChild(newLinkDiv);
-
-  newLinkDiv.classList.add("links");
+window.addEventListener("load", () => {
+  if (linkList !== null && linkList !== undefined) {
+    displayStoredLinks();
+  }
 });
 
 newLinkButton.addEventListener("click", createNewLink);
 
+
+
+// NOTES 
 const noteArea = document.querySelector("#notes");
 
 function saveNotes() {
@@ -196,17 +253,3 @@ noteArea.addEventListener("input", () => {
 });
 
 noteArea.addEventListener("input", saveNotes);
-
-// async function getUser(url) {
-//   try {
-//     const response = await axios.get(url);
-//     console.log(response);
-
-//     const firstUserId =
-//       response.data.length > 0 ? response.data[0].id : undefined;
-//     return console.log({ firstUserId });
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
-// getUser(url);
