@@ -1,0 +1,35 @@
+Title: Dashboard project 
+
+Description: 
+The website requires your location in order to access todays weather information from an API. 
+
+There is also live time and date in the top of the website. 
+
+"Your username dashboard" is editable for the user to customize the dashboard, it will save in the local storage. 
+
+The user can add links and save them in the local storage, once clicked the links will open in a new tab. 
+
+When the user clicks on the "press for a video" button, a random video from an API will open in a new tab within the category "nature". 
+
+The user can write free text under "Notes" that will be saved in the local storage. 
+
+"Change background" button will change the background for the page to a random image from an API. 
+
+FOR API KEYS, PLEASE VISIT *KEYS ARE IMPORTED FROM AN .ENV FILE TO MAIN.JS*: 
+https://openweathermap.org/api
+https://unsplash.com/
+https://pixabay.com/
+
+Fördelar med min kod:
+
+God struktur i modulära funktioner - gör det lättare att läsa
+Asynkrona funktioner async+await
+God API nycklar hantering - fanns i en .env fil som importeras in i main.js pga säkerhet
+Video hanteras i en ny flik (hade inte tid med att fixa en fin container)
+Händelser triggas mesta dels av knappar (anstränger inte lika mycket sidan?)
+
+Nackdelar: 
+Icke specifik felhantering, gör det svårt att hitta fel vid felsökning
+Några bitar av koden är duplicerade pga brist av tid
+Dokumentering av koden i form av kommentarer saknas
+De flesta sakerna kunde vara snabbare att användas i websiddan som t.ex. lägga till länkar, söka efter specifik bakgrundsbild, finare styling mm...  

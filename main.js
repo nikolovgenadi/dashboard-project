@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const WEATHER_API_URL = "http://api.weatherstack.com/current";
+// const WEATHER_API_URL = "http://api.weatherstack.com/current";
 const IMAGES_API_URL = `https://pixabay.com/api/`;
 const BACKGROUNDIMAGES_API_URL = `https://api.unsplash.com/photos/?client_id=`;
 const NEWWEATHER_API_URL = `https://api.openweathermap.org/data`;
