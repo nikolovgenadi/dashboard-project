@@ -11,9 +11,8 @@ const WEATHER_KEY = import.meta.env.VITE_WEATHER_KEY;
 const NEWWEATHER_KEY = import.meta.env.VITE_NEWWEATHER_KEY;
 
 const appContainer = document.querySelector(".app-container");
-const changeBackgroundButton = document.querySelector(
-  ".change-background-button"
-);
+const changeBackgroundButton = document.querySelector(".change-background-button");
+
 const appTime = document.querySelector(".time-time");
 const appDate = document.querySelector(".time-date");
 
@@ -25,6 +24,7 @@ setInterval(() => {
     date.getMonth() + 1
   }-${date.getDate()}`;
 }, 1000);
+
 
 // TODAYS WEATHER
 let lat = 59.3293;
@@ -74,57 +74,73 @@ async function weatherInformation() {
 weatherInformation();
 
 // BACKGROUND IMAGES
-let imageUrls = [];
+let unsplashImageUrls = []; 
 
-async function randomImages() {
-  const url = `https://api.unsplash.com/photos/?client_id=${BACKGROUNDIMAGES_KEY}`;
+async function fetchUnsplashImages() { 
+  const unsplashUrl = `https://api.unsplash.com/photos/?client_id=${BACKGROUNDIMAGES_KEY}`;
 
   try {
-    const response = await fetch(url);
-    const data = await response.json();
+    const unsplashResponse = await fetch(unsplashUrl);
+    const unsplashData = await unsplashResponse.json();
 
-    imageUrls = data.map((image) => image.urls.regular);
+    unsplashImageUrls = unsplashData.map((image) => image.urls.regular);
 
-    setRandomBackground();
+    applyRandomBackground();
     console.log("try");
   } catch (error) {
     console.log("error", error);
   }
 }
 
-function setRandomBackground() {
-  const randomIndex = Math.floor(Math.random() * imageUrls.length);
-  const randomImageUrl = imageUrls[randomIndex];
+function applyRandomBackground() {
+  const randomIndex = Math.floor(Math.random() * unsplashImageUrls.length);
+  const randomImageUrl = unsplashImageUrls[randomIndex];
 
   document.body.style.backgroundImage = `url(${randomImageUrl})`;
   console.log("set");
 }
 
-changeBackgroundButton.addEventListener("click", randomImages);
+changeBackgroundButton.addEventListener("click", fetchUnsplashImages);
 
-// async function getBackgroundPicture() {
-//   if (!localStorage.getItem("backgroundData")) {
-//     const { data } = await axios.get(IMAGES_API_URL, {
-//       params: { key: PIXABAY_KEY, q: "forest", image_type: "photo" },
-//     });
+// Pixabay video
+let pixabayVideoUrls = [];
 
-//     const imagesList = data.hits.map((a) => a.largeImageURL);
-//     localStorage.setItem("backgroundData", JSON.stringify(imagesList));
-//   }
+async function fetchPixabayVideos() {
+  if (!localStorage.getItem("videoData")) {
+    try {
+      const pixabayResponse = await axios.get("https://pixabay.com/api/videos/", {
+        params: {
+          key: `${PIXABAY_KEY}`,
+          q: "nature",
+          pretty: true,
+        },
+      });
 
-//   const urls = JSON.parse(localStorage.getItem("backgroundData"));
+      const pixabayVideosList = pixabayResponse.data.hits.map((video) => video.videos.medium.url);
+      localStorage.setItem("videoData", JSON.stringify(pixabayVideosList));
+    } catch (error) {
+      console.error("Error fetching Pixabay videos:", error);
+    }
+  }
+  const pixabayVideoUrls = JSON.parse(localStorage.getItem("videoData"));
 
-//   appContainer.style.backgroundImage = `url(${urls[0]})`;
-// }
-// getBackgroundPicture();
+  displayRandomVideo(pixabayVideoUrls);
+}
 
-// function changeBackground() {
-//   const urls = JSON.parse(localStorage.getItem("backgroundData"));
+function displayRandomVideo(videoUrls) {
+  const randomIndex = Math.floor(Math.random() * videoUrls.length);
+  const randomVideoUrl = videoUrls[randomIndex];
 
-//   const url = Math.floor(Math.random() * urls.length);
+  window.open(randomVideoUrl, "_blank");
 
-//   appContainer.style.backgroundImage = `url(${urls[url]})`;
-// }
+  console.log("Opening video in a new tab:", randomVideoUrl);
+}
+
+const pixabayChangeVideoButton = document.querySelector(".change-video-button");
+
+pixabayChangeVideoButton.addEventListener("click", () => {
+  fetchPixabayVideos();
+});
 
 // async function getWeatherData() {
 //   let lat = 59.2058347;
@@ -226,8 +242,6 @@ window.addEventListener("load", () => {
 });
 
 newLinkButton.addEventListener("click", createNewLink);
-
-
 
 // NOTES 
 const noteArea = document.querySelector("#notes");

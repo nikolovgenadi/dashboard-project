@@ -95,6 +95,7 @@ h2 {
   cursor: pointer;
   justify-self: flex-end;
   color: #fff;
+  margin-top: 5px;
 }
 
 .links-wrapper {
@@ -138,4 +139,15 @@ h2 {
   border-radius: 7px;
   width: 90%;
   justify-content: center;
+}
+
+.change-video-button {
+  border: none;
+  background-color: rgba(49, 49, 49, 0.6);
+  border-radius: 5px;
+  padding: 0 10px;
+  height: 40px;
+  width: 70%;
+  cursor: pointer;
+  color: #fff;
 }
